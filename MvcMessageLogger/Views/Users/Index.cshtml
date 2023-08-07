@@ -4,7 +4,7 @@
 
     @foreach(var user in Model)
     {
-        <p>Name: @user.Name, Username: @user.Username</p>
+        <p><a href="/users/@user.Id">Login</a> Name: @user.Name, Username: @user.Username</p>
     }
     
     <a href="/users/new">Create a New Profile</a>

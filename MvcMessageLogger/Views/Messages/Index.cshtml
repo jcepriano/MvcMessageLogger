@@ -1,0 +1,8 @@
+﻿@model MvcMessageLogger.Models.User
+
+<h1>@Model.Name Messages</h1>
+
+@foreach(var message in Model.Messages)
+{
+    <p>@message.CreatedAt: @message.Content</p>
+}

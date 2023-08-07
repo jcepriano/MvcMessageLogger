@@ -5,3 +5,9 @@
 
 <p>Name: @Model.Name</p>
 <p>Username: @Model.Username</p>
+
+<p>Messages:</p>
+@foreach(var message in Model.Messages)
+{
+    <p>@message.Content</p>
+}
