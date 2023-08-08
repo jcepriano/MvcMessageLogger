@@ -48,19 +48,27 @@ namespace MvcMessageLogger.Controllers
 
         public IActionResult Stats()
         {
+            // Total Number of Users and Messages
             var usersWithMessages = _context.Users
                 .Include(u => u.Messages)
                 .ToList();
-            //
+            ViewData["TotalUserCount"] = usersWithMessages.Count;
+            ViewData["TotalMessageCount"] = usersWithMessages.Sum(u => u.Messages.Count);
+
+            // The user with most messages
             var userWithMostMessages = usersWithMessages
                 .OrderByDescending(u => u.Messages.Count)
                 .FirstOrDefault();
-            //
+            ViewData["UserWithMostMessages"] = userWithMostMessages;
+
+            // Users ordered by amount of messages
             var usersOrderedByMessageCount = _context.Users
                 .Include(u => u.Messages)
                 .OrderByDescending(u => u.Messages.Count)
                 .ToList();
-            //
+            ViewData["UsersOrderedByMessageCount"] = usersOrderedByMessageCount;
+
+            // Most common word used overall
             var allMessages = _context.Messages.Select(m => m.Content).ToList();
             string allMessagesString = string.Join(" ", allMessages);
             string[] stringArray = allMessagesString.Split(' ');
@@ -69,19 +77,12 @@ namespace MvcMessageLogger.Controllers
                 .OrderByDescending(x => x.Count);
             int max = groups.First().Count;
             var mostCommons = groups.Where(x => x.Count == max);
-            //
             foreach (var group in mostCommons)
             {
                 ViewData["MostCommonWord"] = group.Key;
                 ViewData["MostCommonWordCount"] = group.Count;
             }
-
-
-
-            ViewData["UserWithMostMessages"] = userWithMostMessages;
-            ViewData["UsersOrderedByMessageCount"] = usersOrderedByMessageCount;
-            ViewData["TotalUserCount"] = usersWithMessages.Count;
-            ViewData["TotalMessageCount"] = usersWithMessages.Sum(u => u.Messages.Count);
+            
 
             return View();
         }
