@@ -41,7 +41,7 @@ else
 <h2>Most common words used overall</h2>
 @foreach(var group in commonOverall)
 {
-    <p>Word = @group.Key, Count = @group.Count</p>
+    <p>Word = @ViewData["MostCommonWordOverall"]</p>
 }
 
 
