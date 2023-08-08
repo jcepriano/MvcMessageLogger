@@ -70,8 +70,14 @@ namespace MvcMessageLogger.Controllers
             int max = groups.First().Count;
             var mostCommons = groups.Where(x => x.Count == max);
             //
+            foreach (var group in mostCommons)
+            {
+                ViewData["MostCommonWordOverall"] = group.Key;
+                ViewData["MostCommonWordOverallCount"] = group.Count;
+            }
 
-            ViewData["MostCommonWordOverall"] = mostCommons;
+
+
             ViewData["UserWithMostMessages"] = userWithMostMessages;
             ViewData["UsersOrderedByMessageCount"] = usersOrderedByMessageCount;
             ViewData["TotalUserCount"] = usersWithMessages.Count;

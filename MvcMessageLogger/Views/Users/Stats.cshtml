@@ -5,9 +5,8 @@
     List<User> usersOrdered = ViewData["UsersOrderedByMessageCount"] as List<User>;
 }
 @{
-    List<Message> commonOverall = ViewData["MostCommonWordOverall"] as List<Message>;
+    var commonOverall = ViewData["MostCommonWordOverall"] as IEnumerable<dynamic>;
 }
-
 <h1>Statistics</h1>
 
 <p>Total Number of Users: @ViewData["TotalUserCount"]</p>
@@ -39,10 +38,10 @@ else
 }
 
 <h2>Most common words used overall</h2>
-@foreach(var group in commonOverall)
+@foreach (var group in commonOverall)
 {
-    <p>Word = @ViewData["MostCommonWordOverall"]</p>
+    <p>Word = @group.Key</p>
+    <p>Count = @group.Count</p>
 }
-
 
 <a asp-action="Index">All Users</a>
