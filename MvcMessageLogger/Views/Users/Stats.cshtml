@@ -37,11 +37,15 @@ else
     }
 }
 
-<h2>Most common words used overall</h2>
-@foreach (var group in commonOverall)
+<h2>Most common word used overall</h2>
+@if (ViewData["MostCommonWord"] != null)
 {
-    <p>Word = @group.Key</p>
-    <p>Count = @group.Count</p>
+    <p>Word: @ViewData["MostCommonWord"]</p>
+    <p>Count: @ViewData["MostCommonWordCount"]</p>
+}
+else
+{
+    <p>No messages found.</p>
 }
 
 <a asp-action="Index">All Users</a>

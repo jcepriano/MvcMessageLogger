@@ -62,9 +62,9 @@ namespace MvcMessageLogger.Controllers
                 .ToList();
             //
             var allMessages = _context.Messages.Select(m => m.Content).ToList();
-            string allMessagesString = string.Join(", ", allMessages);
-            string[] stringArray = allMessagesString.Split(',');
-            var groups = stringArray.GroupBy(x => x)
+            string allMessagesString = string.Join(" ", allMessages);
+            string[] stringArray = allMessagesString.Split(' ');
+            var groups = stringArray.GroupBy(x => x.ToLower())
                 .Select(x => new { x.Key, Count = x.Count() })
                 .OrderByDescending(x => x.Count);
             int max = groups.First().Count;
@@ -72,8 +72,8 @@ namespace MvcMessageLogger.Controllers
             //
             foreach (var group in mostCommons)
             {
-                ViewData["MostCommonWordOverall"] = group.Key;
-                ViewData["MostCommonWordOverallCount"] = group.Count;
+                ViewData["MostCommonWord"] = group.Key;
+                ViewData["MostCommonWordCount"] = group.Count;
             }
 
 
