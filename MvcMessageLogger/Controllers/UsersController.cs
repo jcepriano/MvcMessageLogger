@@ -45,5 +45,39 @@ namespace MvcMessageLogger.Controllers
 
             return RedirectToAction("show", new {id = userId});
         }
+
+        public IActionResult Stats()
+        {
+            var usersWithMessages = _context.Users
+                .Include(u => u.Messages)
+                .ToList();
+            //
+            var userWithMostMessages = usersWithMessages
+                .OrderByDescending(u => u.Messages.Count)
+                .FirstOrDefault();
+            //
+            var usersOrderedByMessageCount = _context.Users
+                .Include(u => u.Messages)
+                .OrderByDescending(u => u.Messages.Count)
+                .ToList();
+            //
+            var allMessages = _context.Messages.Select(m => m.Content).ToList();
+            string allMessagesString = string.Join(", ", allMessages);
+            string[] stringArray = allMessagesString.Split(',');
+            var groups = stringArray.GroupBy(x => x)
+                .Select(x => new { x.Key, Count = x.Count() })
+                .OrderByDescending(x => x.Count);
+            int max = groups.First().Count;
+            var mostCommons = groups.Where(x => x.Count == max);
+            //
+
+            ViewData["MostCommonWordOverall"] = mostCommons;
+            ViewData["UserWithMostMessages"] = userWithMostMessages;
+            ViewData["UsersOrderedByMessageCount"] = usersOrderedByMessageCount;
+            ViewData["TotalUserCount"] = usersWithMessages.Count;
+            ViewData["TotalMessageCount"] = usersWithMessages.Sum(u => u.Messages.Count);
+
+            return View();
+        }
     }
 }

@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Statistics";
+}
+@{
+    List<User> usersOrdered = ViewData["UsersOrderedByMessageCount"] as List<User>;
+}
+@{
+    List<Message> commonOverall = ViewData["MostCommonWordOverall"] as List<Message>;
+}
+
+<h1>Statistics</h1>
+
+<p>Total Number of Users: @ViewData["TotalUserCount"]</p>
+<p>Total Number of Messages: @ViewData["TotalMessageCount"]</p>
+
+@if (ViewData["UserWithMostMessages"] != null)
+{
+    <h2>User with Most Messages</h2>
+    <p>User: @((ViewData["UserWithMostMessages"] as User)?.Name)</p>
+    <p>Number of Messages: @((ViewData["UserWithMostMessages"] as User)?.Messages.Count)</p>
+}
+else
+{
+    <p>No users with messages found.</p>
+}
+
+<h2>Users Ordered By Amount of Messages</h2>
+@foreach(var user in usersOrdered)
+{
+    if(user.Messages.Count() > 0)
+    {
+        <p>@user.Name | Messages: @user.Messages.Count()</p>
+
+    }
+    else
+    {
+        <p>@user.Name | No Messages</p>
+    }
+}
+
+<h2>Most common words used overall</h2>
+@foreach(var group in commonOverall)
+{
+    <p>Word = @group.Key, Count = @group.Count</p>
+}
+
+
+<a asp-action="Index">All Users</a>
