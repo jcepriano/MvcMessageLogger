@@ -38,17 +38,19 @@ namespace MvcMessageLogger.Controllers
 
         [HttpPost]
         [Route("users/{id:int}/messages")]
-        public IActionResult Create(Message message, int id)
+        public IActionResult Create(string content, int id)
         {
-            var userMessages = _context.Users
+            var user = _context.Users
                 .Where(u => u.Id == id)
                 .Include(u => u.Messages)
                 .FirstOrDefault();
 
-            userMessages.Messages.Add(message);
+            var message = new Message(content);
+            message.CreatedAt = DateTime.Now.ToUniversalTime();
+            user.Messages.Add(message);
             _context.SaveChanges();
-            return RedirectToAction("Index", new { id = userMessages.Id });
 
+            return RedirectToAction("Index", new { id = user.Id });
         }
     }
 }
