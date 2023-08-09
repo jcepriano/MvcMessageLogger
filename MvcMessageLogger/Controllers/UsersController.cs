@@ -85,14 +85,14 @@ namespace MvcMessageLogger.Controllers
             }
 
             //Most common word per user
-            var userMessages = _context.Users.Include(u => u.Messages);
+            var userMessages = _context.Users.Include(u => u.Messages).ToList();
 
             foreach (var user in userMessages)
             {
                 var allMessages1 = user.Messages.Select(m => m.Content).ToList();
 
                 string allMessagesString1 = string.Join(" ", allMessages1);
-                string[] words = allMessagesString1.Split(' ');
+                string[] words = allMessagesString1.Split(" ");
                 var groups1 = words.GroupBy(x => x.ToLower())
                     .Select(x => new { Word = x.Key, Count = x.Count() })
                     .OrderByDescending(x => x.Count);

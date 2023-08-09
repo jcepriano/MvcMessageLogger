@@ -60,9 +60,10 @@ else
 }
 
 <!--Common word used per user-->
+<h2>Most common word per user</h2>
 @foreach (var user in userMessages)
 {
-    if(allMessages.Any())
+    if(user.Messages.Any())
     {
         if (mostCommon != null && mostCommon.Count() > 1)
         {
