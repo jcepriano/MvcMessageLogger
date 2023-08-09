@@ -69,7 +69,7 @@ else
 
     if (user.Messages.Any())
     {
-        if (!string.IsNullOrEmpty(mostCommonWord))
+        if (!string.IsNullOrEmpty(mostCommonWord) && mostCommonWord.Count() > 1)
         {
             <p>@user.Name | Most Common Word: @mostCommonWord</p>
         }
