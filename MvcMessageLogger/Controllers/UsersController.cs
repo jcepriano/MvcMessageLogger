@@ -95,7 +95,7 @@ namespace MvcMessageLogger.Controllers
                     .OrderByDescending(x => x.Count);
                 var mostCommonWord = groups1.FirstOrDefault()?.Word;
 
-                userMostCommonWords[user] = mostCommonWord ?? ""; // Handle null with an empty string
+                userMostCommonWords[user] = mostCommonWord ?? "";
             }
 
             ViewData["MostCommonWordPerUser"] = userMostCommonWords;
