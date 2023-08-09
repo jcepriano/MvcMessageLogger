@@ -93,9 +93,9 @@ namespace MvcMessageLogger.Controllers
                 var groups1 = words.GroupBy(x => x.ToLower())
                     .Select(x => new { Word = x.Key, Count = x.Count() })
                     .OrderByDescending(x => x.Count);
-                var mostCommonWord = groups1.FirstOrDefault()?.Word;
+                var mostCommonWord = groups1.FirstOrDefault()?.Word; // If FirstOrDefualt returns null, 'Word' property won't output a null reference exception
 
-                userMostCommonWords[user] = mostCommonWord ?? "";
+                userMostCommonWords[user] = mostCommonWord ?? ""; // If mostCommonWord is not null, it uses the value set in mostCommonWord. If is null, then it assigns an empty string to dictionary value
             }
 
             ViewData["MostCommonWordPerUser"] = userMostCommonWords;
