@@ -82,6 +82,9 @@ namespace MvcMessageLogger.Controllers
                 ViewData["MostCommonWord"] = group.Key;
                 ViewData["MostCommonWordCount"] = group.Count;
             }
+
+            //Most common word per user
+
             
 
             return View();
