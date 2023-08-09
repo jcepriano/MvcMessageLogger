@@ -1,0 +1,87 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Statistics";
+}
+@{
+    List<User> usersOrdered = ViewData["UsersOrderedByMessageCount"] as List<User>;
+}
+@{
+    var userMessages = ViewData["userMessages"] as List<User>;
+}
+@{
+    var allMessages = ViewData["AllMessages"] as List<string>;
+}
+@{
+    var mostCommon = ViewData["mostCommonWord"] as string[];
+}
+@{
+    var word = ViewData["commonKey"];
+}
+
+<h1>Statistics</h1>
+
+<p>Total Number of Users: @ViewData["TotalUserCount"]</p>
+<p>Total Number of Messages: @ViewData["TotalMessageCount"]</p>
+
+@if (ViewData["UserWithMostMessages"] != null)
+{
+    <h2>User with Most Messages</h2>
+    <p>User: @((ViewData["UserWithMostMessages"] as User)?.Name)</p>
+    <p>Number of Messages: @((ViewData["UserWithMostMessages"] as User)?.Messages.Count)</p>
+}
+else
+{
+    <p>No users with messages found.</p>
+}
+
+<h2>Users Ordered By Amount of Messages</h2>
+@foreach(var user in usersOrdered)
+{
+    if(user.Messages.Count() > 0)
+    {
+        <p>@user.Name | Messages: @user.Messages.Count()</p>
+
+    }
+    else
+    {
+        <p>@user.Name | No Messages</p>
+    }
+}
+
+<!-- Most common word used overall -->
+<h2>Most common word used overall</h2>
+@if (ViewData["MostCommonWordOverall"] != null)
+{
+    <p>Word: @ViewData["MostCommonWordOverall"]</p>
+    <p>Count: @ViewData["MostCommonWordCountOverall"]</p>
+}
+else
+{
+    <p>No messages found.</p>
+}
+
+<!-- Common word used per user -->
+<h2>Most common word per user</h2>
+@foreach (var kvp in ViewData["MostCommonWordPerUser"] as Dictionary<User, string>)
+{
+    var user = kvp.Key;
+    var mostCommonWord = kvp.Value;
+
+    if (user.Messages.Any())
+    {
+        if (!string.IsNullOrEmpty(mostCommonWord) && mostCommonWord.Count() > 1)
+        {
+            <p>@user.Name | Most Common Word: @mostCommonWord</p>
+        }
+        else
+        {
+            <p>@user.Name | Has messages but no common words.</p>
+        }
+    }
+    else
+    {
+        <p>@user.Name | No messages found.</p>
+    }
+}
+
+<a asp-action="Index">All Users</a>

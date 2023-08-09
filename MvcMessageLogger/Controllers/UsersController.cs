@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MvcMessageLogger.DataAccess;
 using MvcMessageLogger.Models;
+using System.Runtime.Intrinsics.X86;
 
 namespace MvcMessageLogger.Controllers
 {
@@ -44,6 +45,63 @@ namespace MvcMessageLogger.Controllers
             var userId = user.Id;
 
             return RedirectToAction("show", new {id = userId});
+        }
+
+        public IActionResult Stats()
+        {
+            // Total Number of Users and Messages
+            var usersWithMessages = _context.Users
+                .Include(u => u.Messages)
+                .ToList();
+            ViewData["TotalUserCount"] = usersWithMessages.Count;
+            ViewData["TotalMessageCount"] = usersWithMessages.Sum(u => u.Messages.Count);
+
+            // The user with most messages
+            var userWithMostMessages = usersWithMessages
+                .OrderByDescending(u => u.Messages.Count)
+                .FirstOrDefault();
+            ViewData["UserWithMostMessages"] = userWithMostMessages;
+
+            // Users ordered by amount of messages
+            var usersOrderedByMessageCount = _context.Users
+                .Include(u => u.Messages)
+                .OrderByDescending(u => u.Messages.Count)
+                .ToList();
+            ViewData["UsersOrderedByMessageCount"] = usersOrderedByMessageCount;
+
+            // Most common word used overall
+            var allMessages = _context.Messages.Select(m => m.Content).ToList();
+            string allMessagesString = string.Join(" ", allMessages);
+            string[] stringArray = allMessagesString.Split(' ');
+            var groups = stringArray.GroupBy(x => x.ToLower())
+                .Select(x => new { Word = x.Key, Count = x.Count() })
+                .OrderByDescending(x => x.Count);
+            var mostCommonWordOverall = groups.FirstOrDefault();
+
+            ViewData["MostCommonWordOverall"] = mostCommonWordOverall?.Word;
+            ViewData["MostCommonWordCountOverall"] = mostCommonWordOverall?.Count;
+
+            // Most common word per user
+            var userMessages1 = _context.Users.Include(u => u.Messages).ToList();
+            var userMostCommonWords = new Dictionary<User, string>();
+
+            foreach (var user in userMessages1)
+            {
+                var allMessages1 = user.Messages.Select(m => m.Content).ToList();
+                string allMessagesString1 = string.Join(" ", allMessages1);
+                string[] words = allMessagesString1.Split(" ");
+                var groups1 = words.GroupBy(x => x.ToLower())
+                    .Select(x => new { Word = x.Key, Count = x.Count() })
+                    .OrderByDescending(x => x.Count);
+                var mostCommonWord = groups1.FirstOrDefault()?.Word; // If FirstOrDefualt returns null, 'Word' property won't output a null reference exception
+
+                userMostCommonWords[user] = mostCommonWord ?? ""; // If mostCommonWord is not null, it uses the value set in mostCommonWord. If is null, then it assigns an empty string to dictionary value
+            }
+
+            ViewData["MostCommonWordPerUser"] = userMostCommonWords;
+            ViewData["UserMessages"] = userMessages1;
+
+            return View();
         }
     }
 }
