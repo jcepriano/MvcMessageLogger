@@ -83,7 +83,7 @@ namespace MvcMessageLogger.Controllers
                 ViewData["MostCommonWordCount"] = group.Count;
             }
 
-            //Most common word per user
+            //Hour with most messages
 
             
 
