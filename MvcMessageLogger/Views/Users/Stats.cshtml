@@ -1,12 +1,23 @@
-﻿@{
+﻿@model User
+@{
     ViewData["Title"] = "Statistics";
 }
 @{
     List<User> usersOrdered = ViewData["UsersOrderedByMessageCount"] as List<User>;
 }
 @{
-    var commonOverall = ViewData["MostCommonWordOverall"] as IEnumerable<dynamic>;
+    var userMessages = ViewData["userMessages"] as List<User>;
 }
+@{
+    var allMessages = ViewData["AllMessages"] as List<string>;
+}
+@{
+    var mostCommon = ViewData["mostCommonWord"] as string[];
+}
+@{
+    var word = ViewData["commonKey"];
+}
+
 <h1>Statistics</h1>
 
 <p>Total Number of Users: @ViewData["TotalUserCount"]</p>
@@ -49,6 +60,23 @@ else
 }
 
 <!--Common word used per user-->
-
+@foreach (var user in userMessages)
+{
+    if(allMessages.Any())
+    {
+        if (mostCommon != null && mostCommon.Count() > 1)
+        {
+            <p>@user.Name | @word</p>
+        }
+        else
+        {
+            <p>@user.Name | Has messages but no common words.</p>
+        }
+    }
+    else
+    {
+        <p>@user.Name | No messages found.</p>
+    }
+}
 
 <a asp-action="Index">All Users</a>

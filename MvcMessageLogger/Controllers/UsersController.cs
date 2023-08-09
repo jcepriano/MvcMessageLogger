@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MvcMessageLogger.DataAccess;
 using MvcMessageLogger.Models;
+using System.Runtime.Intrinsics.X86;
 
 namespace MvcMessageLogger.Controllers
 {
@@ -84,8 +85,26 @@ namespace MvcMessageLogger.Controllers
             }
 
             //Most common word per user
+            var userMessages = _context.Users.Include(u => u.Messages);
 
-            
+            foreach (var user in userMessages)
+            {
+                var allMessages1 = user.Messages.Select(m => m.Content).ToList();
+
+                string allMessagesString1 = string.Join(" ", allMessages1);
+                string[] words = allMessagesString1.Split(' ');
+                var groups1 = words.GroupBy(x => x.ToLower())
+                    .Select(x => new { Word = x.Key, Count = x.Count() })
+                    .OrderByDescending(x => x.Count);
+                var mostCommonWord = groups1.FirstOrDefault();
+
+                ViewData["AllMessages"] = allMessages1;
+                ViewData["mostCommonWord"] = mostCommonWord;
+                ViewData["commonKey"] = mostCommonWord.Word;
+            }
+
+            ViewData["userMessages"] = userMessages;
+
 
             return View();
         }
