@@ -48,26 +48,30 @@ else
     }
 }
 
+<!-- Most common word used overall -->
 <h2>Most common word used overall</h2>
-@if (ViewData["MostCommonWord"] != null)
+@if (ViewData["MostCommonWordOverall"] != null)
 {
-    <p>Word: @ViewData["MostCommonWord"]</p>
-    <p>Count: @ViewData["MostCommonWordCount"]</p>
+    <p>Word: @ViewData["MostCommonWordOverall"]</p>
+    <p>Count: @ViewData["MostCommonWordCountOverall"]</p>
 }
 else
 {
     <p>No messages found.</p>
 }
 
-<!--Common word used per user-->
+<!-- Common word used per user -->
 <h2>Most common word per user</h2>
-@foreach (var user in userMessages)
+@foreach (var kvp in ViewData["MostCommonWordPerUser"] as Dictionary<User, string>)
 {
-    if(user.Messages.Any())
+    var user = kvp.Key;
+    var mostCommonWord = kvp.Value;
+
+    if (user.Messages.Any())
     {
-        if (mostCommon != null && mostCommon.Count() > 1)
+        if (!string.IsNullOrEmpty(mostCommonWord))
         {
-            <p>@user.Name | @word</p>
+            <p>@user.Name | Most Common Word: @mostCommonWord</p>
         }
         else
         {

@@ -74,37 +74,32 @@ namespace MvcMessageLogger.Controllers
             string allMessagesString = string.Join(" ", allMessages);
             string[] stringArray = allMessagesString.Split(' ');
             var groups = stringArray.GroupBy(x => x.ToLower())
-                .Select(x => new { x.Key, Count = x.Count() })
+                .Select(x => new { Word = x.Key, Count = x.Count() })
                 .OrderByDescending(x => x.Count);
-            int max = groups.First().Count;
-            var mostCommons = groups.Where(x => x.Count == max);
-            foreach (var group in mostCommons)
-            {
-                ViewData["MostCommonWord"] = group.Key;
-                ViewData["MostCommonWordCount"] = group.Count;
-            }
+            var mostCommonWordOverall = groups.FirstOrDefault();
 
-            //Most common word per user
+            ViewData["MostCommonWordOverall"] = mostCommonWordOverall?.Word;
+            ViewData["MostCommonWordCountOverall"] = mostCommonWordOverall?.Count;
+
+            // Most common word per user
             var userMessages1 = _context.Users.Include(u => u.Messages).ToList();
+            var userMostCommonWords = new Dictionary<User, string>();
 
             foreach (var user in userMessages1)
             {
                 var allMessages1 = user.Messages.Select(m => m.Content).ToList();
-
                 string allMessagesString1 = string.Join(" ", allMessages1);
                 string[] words = allMessagesString1.Split(" ");
                 var groups1 = words.GroupBy(x => x.ToLower())
                     .Select(x => new { Word = x.Key, Count = x.Count() })
                     .OrderByDescending(x => x.Count);
-                var mostCommonWord = groups1.FirstOrDefault();
+                var mostCommonWord = groups1.FirstOrDefault()?.Word;
 
-                ViewData["AllMessages"] = allMessages1;
-                ViewData["mostCommonWord"] = mostCommonWord;
-                ViewData["commonKey"] = mostCommonWord.Word;
+                userMostCommonWords[user] = mostCommonWord ?? ""; // Handle null with an empty string
             }
 
-            ViewData["userMessages"] = userMessages1;
-
+            ViewData["MostCommonWordPerUser"] = userMostCommonWords;
+            ViewData["UserMessages"] = userMessages1;
 
             return View();
         }
