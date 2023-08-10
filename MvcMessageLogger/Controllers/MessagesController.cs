@@ -61,7 +61,7 @@ namespace MvcMessageLogger.Controllers
         }
 
         [HttpPost]
-        [Route("users/{id:int}/messages")]
+        [Route("users/{id:int}/messages/{messageId:int}")]
         public IActionResult Update(int id, Message message)
         {
             message.Id = id;
