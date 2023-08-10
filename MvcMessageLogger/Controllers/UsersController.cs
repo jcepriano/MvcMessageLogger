@@ -25,7 +25,10 @@ namespace MvcMessageLogger.Controllers
         [Route("users/{id:int}")]
         public IActionResult Show(int id)
         {
-            var user = _context.Users.Where(u => u.Id == id).Include(user => user.Messages).FirstOrDefault();
+            var user = _context.Users
+                .Where(u => u.Id == id)
+                .Include(user => user.Messages)
+                .FirstOrDefault();
 
             return View(user);
 
@@ -66,13 +69,15 @@ namespace MvcMessageLogger.Controllers
         }
 
         [HttpPost]
+        [Route("users/delete/{userId:int}")]
         public IActionResult Delete(int userId)
         {
             var user = _context.Users
                 .Where(u => u.Id == userId)
                 .Include(u => u.Messages)
-                .First();
+                .FirstOrDefault(u => u.Id == userId);
 
+            _context.Messages.RemoveRange(user.Messages);
             _context.Users.Remove(user);
             _context.SaveChanges();
 
