@@ -52,5 +52,23 @@ namespace MvcMessageLogger.Controllers
 
             return RedirectToAction("Index", new { id = user.Id });
         }
+
+        [Route("users/{userId:int}/messages/{messageId:int}/edit")]
+        public IActionResult Edit(int messageId)
+        {
+            var user = _context.Users.Find(messageId);
+            return View(user);
+        }
+
+        [HttpPost]
+        [Route("users/{id:int}/messages/{messageId:int}")]
+        public IActionResult Update(int id, Message message)
+        {
+            message.Id = id;
+            _context.Messages.Update(message);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
     }
 }

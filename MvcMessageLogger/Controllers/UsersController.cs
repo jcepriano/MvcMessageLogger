@@ -25,7 +25,10 @@ namespace MvcMessageLogger.Controllers
         [Route("users/{id:int}")]
         public IActionResult Show(int id)
         {
-            var user = _context.Users.Where(u => u.Id == id).Include(user => user.Messages).FirstOrDefault();
+            var user = _context.Users
+                .Where(u => u.Id == id)
+                .Include(user => user.Messages)
+                .FirstOrDefault();
 
             return View(user);
 
@@ -45,6 +48,41 @@ namespace MvcMessageLogger.Controllers
             var userId = user.Id;
 
             return RedirectToAction("show", new {id = userId});
+        }
+
+        [Route("users/{id:int}/edit")]
+        public IActionResult Edit(int id)
+        {
+            var user = _context.Users.Find(id);
+            return View(user);
+        }
+
+        [HttpPost]
+        [Route("users/{id:int}")]
+        public IActionResult Update(int id, User user)
+        {
+            user.Id = id;
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("show", new { id = user.Id });
+        }
+
+        [HttpPost]
+        [Route("users/delete/{userId:int}")]
+        public IActionResult Delete(int userId)
+        {
+            var user = _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.Messages)
+                .FirstOrDefault(u => u.Id == userId);
+
+            _context.Messages.RemoveRange(user.Messages);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("index");
+
         }
 
         public IActionResult Stats()
