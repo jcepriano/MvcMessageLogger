@@ -47,6 +47,39 @@ namespace MvcMessageLogger.Controllers
             return RedirectToAction("show", new {id = userId});
         }
 
+        [Route("users/{id:int}/edit")]
+        public IActionResult Edit(int id)
+        {
+            var user = _context.Users.Find(id);
+            return View(user);
+        }
+
+        [HttpPost]
+        [Route("users/{id:int}")]
+        public IActionResult Update(int id, User user)
+        {
+            user.Id = id;
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("show", new { id = user.Id });
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int userId)
+        {
+            var user = _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.Messages)
+                .First();
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("index");
+
+        }
+
         public IActionResult Stats()
         {
             // Total Number of Users and Messages

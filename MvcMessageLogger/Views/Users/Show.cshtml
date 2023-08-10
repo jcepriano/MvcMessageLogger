@@ -15,3 +15,7 @@
 <form method="get" action="/users/@Model.Id/messages/new">
     <button type="submit">Add a Message</button>
 </form>
+<br />
+<form method="post" action="/users/delete/@Model.Id">
+    <button "submit" onclick="return confirm('Are You Sure You Want To Delete Profile For @Model.Name?')">Delete Profile</button>
+</form>
