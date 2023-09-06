@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using MvcMessageLogger.DataAccess;
 using MvcMessageLogger.Models;
-using System.Runtime.Intrinsics.X86;
 
 namespace MvcMessageLogger.Controllers
 {
