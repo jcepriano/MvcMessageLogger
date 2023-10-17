@@ -2,8 +2,8 @@
 
 ## Set Up
 - Fork & Clone Repo
-- Create the connection string with the appropriate values in the "appsettings.json" file
-- Run 'Update-Database' in the package manager console
+- Create the connection string with the appropriate values in the `appsettings.json` file
+- Run `Update-Database` in the package manager console
 
 ## Iteration 1 - Creating and Viewing Users
 
