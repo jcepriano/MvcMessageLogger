@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using MvcMessageLogger.DataAccess;
 using MvcMessageLogger.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MvcMessageLogger.Controllers
 {
@@ -33,6 +35,7 @@ namespace MvcMessageLogger.Controllers
 
         }
 
+        [Route("/users/new")]
         public IActionResult New()
         {
             return View();
@@ -41,6 +44,13 @@ namespace MvcMessageLogger.Controllers
         [HttpPost]
         public IActionResult Index(User user)
         {
+
+            string passWord = user.Password;
+            HashAlgorithm sha = SHA256.Create();
+            byte[] passwordBytes = Encoding.ASCII.GetBytes(passWord);
+            byte[] passwordHash = sha.ComputeHash(passwordBytes);
+            string hashedPassword = BitConverter.ToString(passwordHash).Replace("-", "").ToLower();
+            user.Password = hashedPassword;
             _context.Users.Add(user);
             _context.SaveChanges();
 
@@ -48,6 +58,35 @@ namespace MvcMessageLogger.Controllers
 
             return RedirectToAction("show", new {id = userId});
         }
+
+
+        [Route("users/{username}/login")]
+        public IActionResult Login(string username)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Username == username);
+
+            return View(user);
+        }
+
+        [Route("users/{username}")]
+        public IActionResult Signin(string password, User user)
+        {
+            HashAlgorithm sha = SHA256.Create();
+            byte[] passwordBytes = Encoding.ASCII.GetBytes(password);
+            byte[] passwordHash = sha.ComputeHash(passwordBytes);
+            string hashedPassword = BitConverter.ToString(passwordHash).Replace("-", "").ToLower();
+
+            if (hashedPassword == user.Password)
+            {
+                return RedirectToAction("show", new { id = user.Id });
+            }
+            else
+            {
+                //ViewData["Error"] = "Invalid Password";
+                return RedirectToAction("index");
+            }
+        }
+
 
         [Route("users/{id:int}/edit")]
         public IActionResult Edit(int id)
