@@ -1,0 +1,11 @@
+﻿@model User
+<h1>Enter Password</h1>
+<form method="get" action="/users/@Model.Id">
+    <div class="form-group">
+        <label for="password"></label>
+        <input type="password" id="password" name="password" />
+        <input type="hidden" name="id" value="@Model.Id" />
+    </div>
+    <br />
+    <button type="submit">Create Profile</button>
+</form>

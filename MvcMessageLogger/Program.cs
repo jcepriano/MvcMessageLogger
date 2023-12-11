@@ -12,7 +12,7 @@ builder.Services.AddDbContext<MvcMessageLoggerContext>(
     options =>
         options
             .UseNpgsql(
-                builder.Configuration.GetConnectionString("MvcMessageLoggerDb")
+                builder.Configuration["MVCMessageLogger_DBConnectionString"]
                     ?? throw new InvalidOperationException(
                         "Connection string 'MvcMessageLoggerDb' not found."
                     )
